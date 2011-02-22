@@ -1,3 +1,10 @@
+<?php
+/*
+ * credits to:
+ * c00kiemon5ter for various suggestions
+ * HdkiLLeR(vpk) for security tips
+ */
+?>
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="el" xml:lang="el">
 <head>
 <META AUTHOR="Periklis Ntanasis a.k.a. Master_ex">
@@ -28,36 +35,30 @@ IP ADDRESS:
 <?php
 if(isset($_GET['submit']))
 {
+	// use of escapeshellcmd - must be enabled
+	// http://php.net/manual/en/function.escapeshellcmd.php
+	// escapes #&;`|*?~<>^()[]{}$\, \x0A and \xFF. ' and " 
+	// are escaped only if they are not paired. 
 	$servise = trim($_GET['servise']);
 	$address = trim($_GET['address']);
     if( 
-           (strpos($address,';')>0) 
-        || (strpos($address,'|')>0) 
-        || (strpos($address,'\\')>0) 
-        || (strpos($address,'/')>0) 
-        || (strpos($address,'>')>0) 
-        || (strpos($address,'<')>0) 
-        || (strpos($address,'|')===0)
-        || (strpos($address,';')===0)
-        || (strpos($address,'\\')===0)
-        || (strpos($address,'/')===0) 
-        || (strpos($address,'>')===0) 
-        || (strpos($address,'<')===0)  )
+           (strpos($address,'/')>0)
+        || (strpos($address,'/')===0) )
 	{
 		echo "Don't be naughty!";
 		exit();
 	}
 	if($servise=="ping")
 	{
-		exec("ping ".$address." -c 4",$results);
+		exec("ping '".escapeshellcmd($address)."' -c 4",$results);
 	}
 	if($servise=="traceroute")
 	{
-		exec("traceroute ".$address,$results);
+		exec("traceroute '".escapeshellcmd($address)."'",$results);
 	}
 	if($servise=="nslookup")
 	{
-		exec("nslookup ".$address,$results);
+		exec("nslookup '".escapeshellcmd($address)."'",$results);
 	}
 	foreach($results as $result)
 	{
